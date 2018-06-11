@@ -1,0 +1,272 @@
+Getting started with the Web
+	
+	Prerequisite
+		Installing basic software
+		Dealing with files
+		HTML basics
+		CSS basics
+		JavaScript basics
+		How the web works
+			Clients and servers
+			Internet
+			TCP/IP
+			DNS
+			HTTP
+		CLient
+
+Server-side website programming
+	
+	blocks.png
+	Services
+		https://www.techempower.com/benchmarks/
+
+	Dynamic/Static
+
+
+
+Django introduction
+	
+	Complete
+	Versatile
+	Secure
+	Scalable
+	Maintainable
+	Portable
+	initially developed between 2003 and 2005 by a web team who were responsible for creating and maintaining newspaper websites
+	Django has continued to grow and improve, from its first milestone release (1.0) in September 2008 through to the recently-released version 2.0 (2017)
+	High-profile sites that use Django include: Disqus, Instagram, Knight Foundation, MacArthur Foundation, Mozilla, National Geographic, Open Knowledge Foundation, Pinterest, and Open Stack
+	Django is somewhat opinionated
+	basic-django.png
+		URLs
+		View
+		Models
+		Templates
+		Model View Template (MVT) architecture. It has many similarities to the more familar Model View Controller architecture. 
+		Forms
+		authentication and permissions
+		Caching
+		Administration site
+		Serializing data
+
+
+Setting up a Django development environment
+
+	Django development environment
+	Django setup options
+	database
+	Python 3
+	virtual environment
+
+
+Django Installation
+	
+	Hello Django world !!
+	 		+
+
+	SIMPLE REQ/RES CYCLE with App/Model/View/Temlate/Url
+
+		create simple app
+		create Person model
+		python3 manage.py makemigration
+		python3 manage.py sqlmigrate simple 0001_initial
+		python3 manage.py migrate
+		python3 manage.py shell
+		insert first person
+		create view
+		create url
+		/simple/ -> simple index
+		create template
+		pass result of a query to the template
+
+
+
+The Local Library website
+	
+	Use Django's tools to create a skeleton website and application.
+	Start and stop the development server.
+	Create models to represent your application's data.
+	Use the Django admin site to populate your site's data.
+	Create views to retrieve specific data in response to different requests, and templates to render the data as HTML to be displayed in the browser.
+	Create mappers to associate different URL patterns with specific views.
+	Add user authorisation and sessions to control site behaviour and access.
+	Work with forms.
+	Write test code for your app.
+	Use Django's security effectively.
+	Deploy your application to production.
+
+
+Creating a skeleton website
+	
+	Creating the project
+	Creating the catalog application
+	Registering the catalog application
+	Specifying the database
+	Running the website
+
+
+Using models
+	
+	locallibrary_models.png
+	Model definition
+
+
+	from django.db import models
+
+	class MyModelName(models.Model):
+	    """
+	    A typical class defining a model, derived from the Model class.
+	    """
+
+	    # Fields
+	    my_field_name = models.CharField(max_length=20, help_text="Enter field documentation")
+	    ...
+
+	    # Metadata
+	    class Meta: 
+	        ordering = ["-my_field_name"]
+
+	    # Methods
+	    def get_absolute_url(self):
+	         """
+	         Returns the url to access a particular instance of MyModelName.
+	         """
+	         return reverse('model-detail-view', args=[str(self.id)])
+	    
+	    def __str__(self):
+	        """
+	        String for representing the MyModelName object (in Admin site etc.)
+	        """
+	        return self.field_name
+
+
+	Fields
+	Common field arguments
+		https://docs.djangoproject.com/en/2.0/ref/models/fields/#field-options
+	Common field types
+		https://docs.djangoproject.com/en/2.0/ref/models/fields/#field-types
+	Metadata
+		https://docs.djangoproject.com/en/2.0/ref/models/options/
+	Methods
+		__str__, get_absolute_url
+	Model management
+		a_record = MyModelName(my_field_name="Instance #1")
+		a_record.save()
+
+		print(a_record.id) #should return 1 for the first record. 
+		print(a_record.my_field_name) # should print 'Instance #1'
+
+		a_record.my_field_name="New Instance Name"
+		a_record.save()
+
+		all_books = Book.objects.all()
+		wild_books = Book.objects.filter(title__contains='wild')
+		number_wild_books = Book.objects.filter(title__contains='wild').count()
+
+		https://docs.djangoproject.com/en/2.0/ref/models/querysets/
+		https://github.com/chrisdl/Django-QuerySet-Cheatsheet
+		https://gist.github.com/gladson/1541450
+
+
+Defining the LocalLibrary Models
+	
+	Genre model
+	Book model
+	BookInstance model
+	Author model
+	Language model
+
+	python3 manage.py makemigrations
+	python3 manage.py migrate
+
+Django admin site
+	
+	Minimal registration of Models
+	Creating a superuser
+	Logging in and using the site
+	Advanced configuration
+		https://docs.djangoproject.com/en/2.0/ref/contrib/admin/
+
+Creating our home page
+	
+	basic-django.png
+	Creating the index page
+	URL mapping
+		path('', views.index, name='index'),
+	View (function-based)
+	Template
+	Extending templates
+	Referencing static files in templates
+
+
+Generic list and detail views
+	
+	Book list page
+	URL mapping
+    	path('books/', views.BookListView.as_view(), name='books'),
+	View (class-based)
+	Creating the List View template
+	Book detail page
+	URL mapping
+		path('book/<int:pk>', views.BookDetailView.as_view(), name='book-detail'),
+		# re_path(r'^book/(?P<pk>\d+)$', views.BookDetailView.as_view(), name='book-detail'),
+	View (class-based)
+	Creating the Detail View template
+
+
+Sessions framework
+	
+	What are sessions?
+	Enabling sessions
+	Using sessions
+		my_car = request.session['my_car']
+		my_car = request.session.get('my_car', 'mini')
+		request.session['my_car'] = 'mini'
+		del request.session['my_car']
+		request.session['my_car']['wheels'] = 'alloy'
+		request.session.modified = True
+		SESSION_SAVE_EVERY_REQUEST = True
+
+User authentication and permissions
+
+	Enabling authentication
+	Creating users and groups
+
+		Library Members
+		create a user
+
+		from django.contrib.auth.models import User
+		user = User.objects.create_user('myusername', 'myemail@crazymail.com', 'mypassword')
+		user.first_name = 'John'
+		user.last_name = 'Citizen'
+		user.save()
+	Project URLs
+		urlpatterns += [
+		    path('accounts/', include('django.contrib.auth.urls')),
+		]
+	Template directory
+	'DIRS': ['./templates',],
+
+	URL conf for on loan books
+		path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed'),
+	Permissions
+        permissions = (("can_mark_returned", "Set book as returned"),)  
+
+
+Working with forms
+
+	Django form handling process
+	forms.png
+	Renew-book form using a Form and function view
+	Declaring a Form
+	Form fields
+		https://docs.djangoproject.com/en/2.0/ref/forms/fields/
+	path('author/create/', views.AuthorCreate.as_view(), name='author_create'),
+    path('author/<int:pk>/update/', views.AuthorUpdate.as_view(), name='author_update'),
+    path('author/<int:pk>/delete/', views.AuthorDelete.as_view(), name='author_delete'),
+
+
+
+
+
+
+
